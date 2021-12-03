@@ -2,7 +2,7 @@
   <img height=100 src="https://arweave.net/sBogY_roIMJWInS0HIEi86eFGzHUnNxUzyKEdOKPWh0" />
 </p>
 
-# ETH EDITIONS
+# HYPERLINK: Linked NFT Editions
 
 TODO: add better testing and scripts   
 TODO: add  royalty EIP
