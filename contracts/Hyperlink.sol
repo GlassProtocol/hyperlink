@@ -15,6 +15,14 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
     using SafeMathUpgradeable for uint256;
     using AddressUpgradeable for address payable;
 
+    ///////////////////////////////////////
+
+    event Referral (
+        address indexed referrer,
+        address indexed buyer,
+        uint256 amount
+    );
+
     // ============== VARIABLES ==============
 
     // METADATA
@@ -62,12 +70,11 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
         curatorFee = _curatorFee;
         referralFee = _referralFee;
 
-
         hyperlink = _hyperlink;
     }
 
     // ============ CORE FUNCTIONS ============
-    function mint(address payable referral) external payable nonReentrant {
+    function mint(address payable referral) public payable nonReentrant {
         // Check that there are still tokens available to purchase.
         require(
             numberSold < quantityForSale,
@@ -105,6 +112,7 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
         if (referral != address(0) && referralFee != 0) {
             referral.sendValue(referralFee);
             primaryRecipient.sendValue(msg.value.sub(curatorFee).sub(referralFee));
+            emit Referral(referral, msg.sender, referralFee);
         } else {
             primaryRecipient.sendValue(msg.value.sub(curatorFee));
         }
@@ -123,6 +131,10 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
 
     function editionURI() public view returns (string memory) {
         return tokenMetadata;
+    }
+
+    function getHyperlink() public view returns (address) {
+        return hyperlink;
     }
 
 }

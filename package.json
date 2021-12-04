@@ -10,14 +10,13 @@
     "script": "hardhat run",
     "prettier": "prettier --write 'contracts/**/*.sol'"
   },
-  "repository": "https://github.com/GlassProtocol/glasspass.git",
+  "repository": "https://github.com/GlassProtocol/hyperlink.git",
   "author": "Sam Sends <sam@glass.xyz>",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-solhint": "^2.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
-    "@openzeppelin/contracts": "^4.3.1",
     "@openzeppelin/contracts-upgradeable": "^4.3.2",
     "@openzeppelin/hardhat-upgrades": "^1.10.0",
     "@typechain/ethers-v5": "^7.0.1",

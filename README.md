@@ -4,6 +4,7 @@
 
 # HYPERLINK: Linked NFT Editions
 
-TODO: add better testing and scripts   
-TODO: add  royalty EIP
-
+1. add royalty EIP
+2. add safer transfer with a fallback
+3. make sure to check that a contract is an erc721
+4. events
