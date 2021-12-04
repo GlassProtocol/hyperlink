@@ -8,14 +8,9 @@ import "./Hyperlink.sol";
 
 contract HyperlinkFactory {
     address immutable internal implementation;
-    address payable immutable internal curator;
-    uint256 immutable internal curatorBasisPoints;
 
-    constructor(address payable _curator, uint256 _curatorBasisPoints) {
-        require(_curatorBasisPoints < 10000, "Editions: treasury primary sale fee must be less than 10000 (basis points)");
+    constructor() {
         implementation = address(new Hyperlink());
-        curator = _curator;
-        curatorBasisPoints = _curatorBasisPoints;
     }
     
     function getImplementation() public view returns (address) {
@@ -23,16 +18,18 @@ contract HyperlinkFactory {
     }
 
     function createEdition(
-        string calldata _name,
-        string calldata _symbol,
         string calldata _tokenMetadata,
         string calldata _contractMetadata,
+        address payable _primaryRecipient,
         uint256 _quantityForSale,
-        uint256 _price,
-        address payable _recipient
+        uint256 _salePrice,
+        address payable _curator,
+        uint256 _curatorFee,
+        uint256 _referralFee,
+        address _hyperlink
     ) external returns (address) {
         address clone = Clones.cloneDeterministic(implementation, keccak256(abi.encode(_tokenMetadata)));
-        Hyperlink(payable(clone)).initialize(_name, _symbol, _tokenMetadata, _contractMetadata, _quantityForSale, _price, _recipient, curator, curatorBasisPoints);
+        Hyperlink(payable(clone)).initialize( _tokenMetadata, _contractMetadata, _primaryRecipient, _quantityForSale, _salePrice, _curator, _curatorFee, _referralFee, _hyperlink);
         return clone;
     }
 

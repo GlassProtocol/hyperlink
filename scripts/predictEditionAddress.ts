@@ -2,15 +2,15 @@ import { ethers } from "hardhat";
 import { utils } from 'ethers'
 
 
-const EDITION_FACTORY_ADDRESS = '0xFFEB90fad48F522190ABb86BDd6ac7169C20Ef00'
-const TOKEN_METADATA = "jlPqgRN64nqsqX04uI0z5alJIKudGIGwEPalDsLfG6c"
+const FACTORY_ADDRESS = '0xFFEB90fad48F522190ABb86BDd6ac7169C20Ef00'
+const TOKEN_METADATA = "ar://jlPqgRN64nqsqX04uI0z5alJIKudGIGwEPalDsLfG6c"
 
 
 async function main() {
-    const contractFactory = await ethers.getContractFactory("EditionsFactory");
-    const editionsFactory = contractFactory.attach(EDITION_FACTORY_ADDRESS);
-    const editionAddress = await editionsFactory.predictEditionAddress(utils.base64.decode(TOKEN_METADATA))
-    console.log(editionAddress)
+    const contractFactory = await ethers.getContractFactory("HyperlinkFactory");
+    const hyperlinkFactory = contractFactory.attach(FACTORY_ADDRESS);
+    const hyperlinkAddress = await hyperlinkFactory.predictEditionAddress(utils.base64.decode(TOKEN_METADATA))
+    console.log(hyperlinkAddress)
 }
 
 main()
