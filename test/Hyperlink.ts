@@ -7,7 +7,7 @@ import { Contract, Signer, BigNumber, utils } from 'ethers'
 describe('Editions', () => {
     let deployer: Signer
     let primaryRecipient: Signer
-    let curator: Signer
+    let platform: Signer
     let referrer: Signer
     let buyer: Signer
 
@@ -25,15 +25,13 @@ describe('Editions', () => {
     const QUANTITY_FOR_SALE = 100
     const SALE_PRICE = utils.parseEther("0.10")
 
-    const CURATOR_FEE = utils.parseEther("0.01")
-    const REFERRAL_FEE = utils.parseEther("0.01")
+    const PLATFORM_FEE = utils.parseEther("0.01")
     const NO_HYPERLINK = "0x0000000000000000000000000000000000000000"
 
-    const NO_REFERRAL = "0x0000000000000000000000000000000000000000"
 
 
     beforeEach(async () => {
-        [deployer, buyer, primaryRecipient, curator, referrer] = await ethers.getSigners()
+        [deployer, buyer, primaryRecipient, platform, referrer] = await ethers.getSigners()
 
         const hyperlinkFactory = await ethers.getContractFactory("HyperlinkFactory");
         HyperlinkFactory = await hyperlinkFactory.deploy();
@@ -53,9 +51,8 @@ describe('Editions', () => {
             await primaryRecipient.getAddress(),
             QUANTITY_FOR_SALE,
             SALE_PRICE,
-            await curator.getAddress(),
-            CURATOR_FEE,
-            REFERRAL_FEE,
+            await platform.getAddress(),
+            PLATFORM_FEE,
             NO_HYPERLINK
         )
 
@@ -81,7 +78,7 @@ describe('Editions', () => {
             expect(await Hyperlink.editionURI()).to.equal(TOKEN_METADATA)
         })
         it('should have expected edition URI', async () => {
-            await Hyperlink.connect(buyer).mint(NO_REFERRAL, {value: SALE_PRICE})
+            await Hyperlink.connect(buyer).mint({value: SALE_PRICE})
             expect(await Hyperlink.tokenURI(1)).to.equal(TOKEN_METADATA)
 
         })
@@ -93,26 +90,12 @@ describe('Editions', () => {
         it('should have expected treasury', async () => {
 
 
-            await Hyperlink.connect(buyer).mint(NO_REFERRAL, {value: SALE_PRICE})
+            await Hyperlink.connect(buyer).mint({value: SALE_PRICE})
 
-            console.log(await (await curator.getBalance()).toString())
+            console.log(await (await platform.getBalance()).toString())
             console.log(await (await primaryRecipient.getBalance()).toString())
             expect(await Hyperlink.ownerOf(BigNumber.from("1"))).to.equal(await buyer.getAddress())
             expect(await Hyperlink.balanceOf(await buyer.getAddress())).to.equal(1)
-        })
-    })
-
-
-    describe('Referral Testing', () => {
-        it('should have expected treasury', async () => {
-
-
-            await Hyperlink.connect(buyer).mint(await referrer.getAddress(), {value: SALE_PRICE})
-
-            console.log(await (await referrer.getBalance()).toString())
-
-
-
         })
     })
 
@@ -138,20 +121,19 @@ describe('Editions', () => {
                 await primaryRecipient.getAddress(),
                 QUANTITY_FOR_SALE,
                 SALE_PRICE,
-                await curator.getAddress(),
-                CURATOR_FEE,
-                REFERRAL_FEE,
+                await platform.getAddress(),
+                PLATFORM_FEE,
                 Hyperlink.address
             )
     
             const otherHyperlink = await hyperlink.attach(otherHyperlinkAddress);
 
-            await Hyperlink.connect(buyer).mint(NO_REFERRAL, {value: SALE_PRICE})
+            await Hyperlink.connect(buyer).mint({value: SALE_PRICE})
 
-            await otherHyperlink.connect(buyer).mint(NO_REFERRAL, {value: SALE_PRICE})
+            await otherHyperlink.connect(buyer).mint({value: SALE_PRICE})
             console.log("boought")
-            await otherHyperlink.connect(buyer).mint(NO_REFERRAL, {value: SALE_PRICE})
-            console.log("should fail")
+            // await otherHyperlink.connect(buyer).mint({value: SALE_PRICE})
+            // console.log("should fail")
 
 
 

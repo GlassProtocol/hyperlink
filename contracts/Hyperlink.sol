@@ -15,14 +15,6 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
     using SafeMathUpgradeable for uint256;
     using AddressUpgradeable for address payable;
 
-    ///////////////////////////////////////
-
-    event Referral (
-        address indexed referrer,
-        address indexed buyer,
-        uint256 amount
-    );
-
     // ============== VARIABLES ==============
 
     // METADATA
@@ -34,9 +26,8 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
     uint256 internal quantityForSale;
     uint256 internal salePrice;
 
-    address payable internal curator;
-    uint256 internal curatorFee; // IN ETH (not a percentage)
-    uint256 internal referralFee; // IN ETH (not a percentage)
+    address payable internal platform;
+    uint256 internal platformFee; // IN ETH (not a percentage)
 
     // HYPERLINK
     address internal hyperlink;
@@ -53,9 +44,8 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
         address payable _primaryRecipient,
         uint256 _quantityForSale,
         uint256 _salePrice,
-        address payable _curator,
-        uint256 _curatorFee,
-        uint256 _referralFee,
+        address payable _platform,
+        uint256 _platformFee,
         address _hyperlink
     ) initializer external {
         __ERC721_init("Hyperlink", "HYPERLINK");
@@ -66,15 +56,14 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
         quantityForSale = _quantityForSale;
         salePrice = _salePrice;
 
-        curator = _curator;
-        curatorFee = _curatorFee;
-        referralFee = _referralFee;
+        platform = _platform;
+        platformFee = _platformFee;
 
         hyperlink = _hyperlink;
     }
 
     // ============ CORE FUNCTIONS ============
-    function mint(address payable referral) public payable nonReentrant {
+    function mint() public payable nonReentrant {
         // Check that there are still tokens available to purchase.
         require(
             numberSold < quantityForSale,
@@ -98,24 +87,18 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
             );
         }
 
-        require(
-            msg.sender != referral,
-            "Hyperlink: cannot refer to the same address buying the edition"
-        );
-
 
         numberSold++; // first edition starts at index 1 (more humanly understood)
         _mint(msg.sender, numberSold);
 
-        curator.sendValue(curatorFee);
-
-        if (referral != address(0) && referralFee != 0) {
-            referral.sendValue(referralFee);
-            primaryRecipient.sendValue(msg.value.sub(curatorFee).sub(referralFee));
-            emit Referral(referral, msg.sender, referralFee);
-        } else {
-            primaryRecipient.sendValue(msg.value.sub(curatorFee));
+        if (platformFee > 0) {
+            platform.sendValue(platformFee);
         }
+
+        if (salePrice > 0) {
+            primaryRecipient.sendValue(msg.value.sub(platformFee));
+        }
+
     }
 
     // ============ URI FUNCTIONS ============

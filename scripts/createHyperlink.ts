@@ -9,9 +9,8 @@ const CONTRACT_METADATA = "ar://67tSLhzy-ji2Gbfoe6wujBbhkQ3jfFrThUj2Y9d8"
 const PRIMARY_RECIPIENT = "0xAbf798E220c6E44E4F8d720E8095E8dB230E9718"
 const QUANTITY_FOR_SALE = 100
 const SALE_PRICE = utils.parseEther("0.10")
-const CURATOR = "0x84361648F858396551beF155F9ED578d807D5Be8"
-const CURATOR_FEE = utils.parseEther("0.01")
-const REFERRAL_FEE = utils.parseEther("0.01")
+const PLATFORM = "0x84361648F858396551beF155F9ED578d807D5Be8"
+const PLATFORM_FEE = utils.parseEther("0.01")
 const HYPERLINK = "0x0000000000000000000000000000000000000000"
 
 async function main() {
@@ -23,9 +22,8 @@ async function main() {
         PRIMARY_RECIPIENT,
         QUANTITY_FOR_SALE,
         SALE_PRICE,
-        CURATOR,
-        CURATOR_FEE,
-        REFERRAL_FEE,
+        PLATFORM,
+        PLATFORM_FEE,
         HYPERLINK
     )
 }

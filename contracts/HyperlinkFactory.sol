@@ -24,12 +24,11 @@ contract HyperlinkFactory {
     event HyperlinkCreated(
         address indexed primaryRecipient,
         address indexed hyperlink,
-        address indexed curator,
+        address indexed platform,
         address contractAddress,
         uint256 quantityForSale,
         uint256 salePrice,
-        uint256 curatorFee,
-        uint256 referralFee
+        uint256 platformFee
     );
 
     address immutable internal implementation;
@@ -48,14 +47,13 @@ contract HyperlinkFactory {
         address payable _primaryRecipient,
         uint256 _quantityForSale,
         uint256 _salePrice,
-        address payable _curator,
-        uint256 _curatorFee,
-        uint256 _referralFee,
+        address payable _platform,
+        uint256 _platformFee,
         address _hyperlink
     ) external returns (address) {
         address clone = ClonesUpgradeable.cloneDeterministic(implementation, keccak256(abi.encode(_tokenMetadata)));
 
-        require(_salePrice.sub(_curatorFee).sub(_referralFee) > 0, "");
+        require(_salePrice.sub(_platformFee) > 0, "");
         require(_quantityForSale > 0, "");
 
         if (_hyperlink != address(0)) {
@@ -65,10 +63,8 @@ contract HyperlinkFactory {
             );
         }
 
-
-
-        Hyperlink(payable(clone)).initialize( _tokenMetadata, _contractMetadata, _primaryRecipient, _quantityForSale, _salePrice, _curator, _curatorFee, _referralFee, _hyperlink);
-        emit HyperlinkCreated(_primaryRecipient, _hyperlink, _curator, clone, _quantityForSale, _salePrice, _curatorFee, _referralFee);
+        Hyperlink(payable(clone)).initialize( _tokenMetadata, _contractMetadata, _primaryRecipient, _quantityForSale, _salePrice, _platform, _platformFee, _hyperlink);
+        emit HyperlinkCreated(_primaryRecipient, _hyperlink, _platform, clone, _quantityForSale, _salePrice, _platformFee);
         return clone;
     }
 
