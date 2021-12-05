@@ -58,10 +58,14 @@ contract HyperlinkFactory {
         require(_salePrice.sub(_curatorFee).sub(_referralFee) > 0, "");
         require(_quantityForSale > 0, "");
 
-        require(
-            IERC165Upgradeable(_hyperlink).supportsInterface(type(IERC721Upgradeable).interfaceId),
-            "HyperlinkFactory: hyperlink does not support ERC721 interfaceID"
-        );
+        if (_hyperlink != address(0)) {
+            require(
+                IERC165Upgradeable(_hyperlink).supportsInterface(type(IERC721Upgradeable).interfaceId),
+                "HyperlinkFactory: hyperlink does not support ERC721 interfaceID"
+            );
+        }
+
+
 
         Hyperlink(payable(clone)).initialize( _tokenMetadata, _contractMetadata, _primaryRecipient, _quantityForSale, _salePrice, _curator, _curatorFee, _referralFee, _hyperlink);
         emit HyperlinkCreated(_primaryRecipient, _hyperlink, _curator, clone, _quantityForSale, _salePrice, _curatorFee, _referralFee);
