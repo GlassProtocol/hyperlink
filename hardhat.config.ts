@@ -4,6 +4,8 @@ import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
 import '@nomiclabs/hardhat-solhint'
 import '@typechain/hardhat'
+import "@nomiclabs/hardhat-etherscan";
+
 
 dotenv.config();
 
@@ -33,6 +35,9 @@ const config: HardhatUserConfig = {
       accounts: [process.env.PRODUCTION_PRIVATE_KEY!],
     },
   },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API,
+  }
 };
 
 
