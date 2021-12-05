@@ -8,7 +8,6 @@ describe('Editions', () => {
     let deployer: Signer
     let primaryRecipient: Signer
     let platform: Signer
-    let referrer: Signer
     let buyer: Signer
 
 
@@ -31,7 +30,7 @@ describe('Editions', () => {
 
 
     beforeEach(async () => {
-        [deployer, buyer, primaryRecipient, platform, referrer] = await ethers.getSigners()
+        [deployer, buyer, primaryRecipient, platform] = await ethers.getSigners()
 
         const hyperlinkFactory = await ethers.getContractFactory("HyperlinkFactory");
         HyperlinkFactory = await hyperlinkFactory.deploy();
