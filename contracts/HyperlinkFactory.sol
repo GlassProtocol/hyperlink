@@ -44,7 +44,7 @@ contract HyperlinkFactory {
         return implementation;
     }
 
-    function createEdition(
+    function createHyperlink(
         string calldata _tokenMetadata,
         string calldata _contractMetadata,
         address payable _primaryRecipient,

@@ -44,7 +44,7 @@ describe('Editions', () => {
         const hyperlink = await ethers.getContractFactory("Hyperlink");
 
 
-        await HyperlinkFactory.createEdition(
+        await HyperlinkFactory.createHyperlink(
             TOKEN_METADATA,
             CONTRACT_METADATA,
             await primaryRecipient.getAddress(),
@@ -114,7 +114,7 @@ describe('Editions', () => {
             const hyperlink = await ethers.getContractFactory("Hyperlink");
     
     
-            await HyperlinkFactory.createEdition(
+            await HyperlinkFactory.createHyperlink(
                 OTHER_TOKEN_METADATA,
                 CONTRACT_METADATA,
                 await primaryRecipient.getAddress(),
