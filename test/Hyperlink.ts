@@ -24,7 +24,7 @@ describe('Editions', () => {
     const QUANTITY_FOR_SALE = 100
     const SALE_PRICE = utils.parseEther("0.10")
 
-    const PLATFORM_FEE = utils.parseEther("0.01")
+    const PLATFORM_FEE_BASIS_POINTS = 2000
     const NO_HYPERLINK = "0x0000000000000000000000000000000000000000"
 
 
@@ -51,7 +51,7 @@ describe('Editions', () => {
             QUANTITY_FOR_SALE,
             SALE_PRICE,
             await platform.getAddress(),
-            PLATFORM_FEE,
+            PLATFORM_FEE_BASIS_POINTS,
             NO_HYPERLINK
         )
 
@@ -121,7 +121,7 @@ describe('Editions', () => {
                 QUANTITY_FOR_SALE,
                 SALE_PRICE,
                 await platform.getAddress(),
-                PLATFORM_FEE,
+                PLATFORM_FEE_BASIS_POINTS,
                 Hyperlink.address
             )
     

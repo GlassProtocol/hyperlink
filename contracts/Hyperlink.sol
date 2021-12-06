@@ -15,6 +15,9 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
     using SafeMathUpgradeable for uint256;
     using AddressUpgradeable for address payable;
 
+    uint256 internal constant BASIS_POINTS = 10000; // denominator for calculating percentages
+
+
     // ============== VARIABLES ==============
 
     // METADATA
@@ -27,7 +30,7 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
     uint256 internal salePrice;
 
     address payable internal platform;
-    uint256 internal platformFee; // IN ETH (not a percentage)
+    uint256 internal platformFeeBasisPoints; // IN ETH (not a percentage)
 
     // HYPERLINK
     address internal hyperlink;
@@ -45,7 +48,7 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
         uint256 _quantityForSale,
         uint256 _salePrice,
         address payable _platform,
-        uint256 _platformFee,
+        uint256 _platformFeeBasisPoints,
         address _hyperlink
     ) initializer external {
         __ERC721_init("Hyperlink", "HYPERLINK");
@@ -57,13 +60,13 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
         salePrice = _salePrice;
 
         platform = _platform;
-        platformFee = _platformFee;
+        platformFeeBasisPoints = _platformFeeBasisPoints;
 
         hyperlink = _hyperlink;
     }
 
     // ============ CORE FUNCTIONS ============
-    function mint() public payable nonReentrant {
+    function mint() public payable {
         // Check that there are still tokens available to purchase.
         require(
             numberSold < quantityForSale,
@@ -90,16 +93,24 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
 
         numberSold++; // first edition starts at index 1 (more humanly understood)
         _mint(msg.sender, numberSold);
+    }
 
+    function withdraw() public nonReentrant {
+        uint256 contractBalance = address(this).balance;
+
+        require(
+            contractBalance > 0,
+            "Hyperlink: contract balance must be greater than zero"
+        );
+
+        uint256 platformFee = contractBalance.mul(platformFeeBasisPoints) / BASIS_POINTS;
+        primaryRecipient.sendValue(contractBalance.sub(platformFee)); // the rest goes to the fund recipient 
         if (platformFee > 0) {
             platform.sendValue(platformFee);
         }
-
-        if (salePrice > 0) {
-            primaryRecipient.sendValue(msg.value.sub(platformFee));
-        }
-
     }
+
+    
 
     // ============ URI FUNCTIONS ============
 

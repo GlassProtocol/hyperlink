@@ -20,6 +20,9 @@ contract HyperlinkFactory {
 
     using SafeMathUpgradeable for uint256;
 
+    uint256 internal constant BASIS_POINTS = 10000; // denominator for calculating percentages
+
+
 
     event HyperlinkCreated(
         address indexed primaryRecipient,
@@ -28,7 +31,7 @@ contract HyperlinkFactory {
         address contractAddress,
         uint256 quantityForSale,
         uint256 salePrice,
-        uint256 platformFee
+        uint256 platformFeeBasisPoints
     );
 
     address immutable internal implementation;
@@ -48,13 +51,14 @@ contract HyperlinkFactory {
         uint256 _quantityForSale,
         uint256 _salePrice,
         address payable _platform,
-        uint256 _platformFee,
+        uint256 _platformFeeBasisPoints,
         address _hyperlink
     ) external returns (address) {
         address clone = ClonesUpgradeable.cloneDeterministic(implementation, keccak256(abi.encode(_tokenMetadata)));
 
-        require(_salePrice.sub(_platformFee) > 0, "");
-        require(_quantityForSale > 0, "");
+        require(_platformFeeBasisPoints <= BASIS_POINTS, "HyperlinkFactory: platform fee basis points must be less than or equal to contract basis points");
+
+        require(_quantityForSale > 0, "HyperlinkFactory: must sell at least one edition");
 
         if (_hyperlink != address(0)) {
             require(
@@ -63,8 +67,8 @@ contract HyperlinkFactory {
             );
         }
 
-        Hyperlink(payable(clone)).initialize( _tokenMetadata, _contractMetadata, _primaryRecipient, _quantityForSale, _salePrice, _platform, _platformFee, _hyperlink);
-        emit HyperlinkCreated(_primaryRecipient, _hyperlink, _platform, clone, _quantityForSale, _salePrice, _platformFee);
+        Hyperlink(payable(clone)).initialize( _tokenMetadata, _contractMetadata, _primaryRecipient, _quantityForSale, _salePrice, _platform, _platformFeeBasisPoints, _hyperlink);
+        emit HyperlinkCreated(_primaryRecipient, _hyperlink, _platform, clone, _quantityForSale, _salePrice, _platformFeeBasisPoints);
         return clone;
     }
 
