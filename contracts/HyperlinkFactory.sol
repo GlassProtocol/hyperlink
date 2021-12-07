@@ -45,30 +45,30 @@ contract HyperlinkFactory {
     }
 
     function createHyperlink(
-        string calldata _tokenMetadata,
-        string calldata _contractMetadata,
-        address payable _primaryRecipient,
-        uint256 _quantityForSale,
-        uint256 _salePrice,
-        address payable _platform,
-        uint256 _platformFeeBasisPoints,
-        address _hyperlink
+        string calldata tokenMetadata_,
+        string calldata contractMetadata_,
+        address payable primaryRecipient_,
+        uint256 quantityForSale_,
+        uint256 salePrice_,
+        address payable platform_,
+        uint256 platformFeeBasisPoints_,
+        address link_
     ) external returns (address) {
-        address clone = ClonesUpgradeable.cloneDeterministic(implementation, keccak256(abi.encode(_tokenMetadata)));
+        address clone = ClonesUpgradeable.cloneDeterministic(implementation, keccak256(abi.encode(tokenMetadata_)));
 
-        require(_platformFeeBasisPoints <= BASIS_POINTS, "HyperlinkFactory: platform fee basis points must be less than or equal to contract basis points");
+        require(platformFeeBasisPoints_ <= BASIS_POINTS, "HyperlinkFactory: platform fee basis points must be less than or equal to contract basis points");
 
-        require(_quantityForSale > 0, "HyperlinkFactory: must sell at least one edition");
+        require(quantityForSale_ > 0, "HyperlinkFactory: must sell at least one edition");
 
-        if (_hyperlink != address(0)) {
+        if (link_ != address(0)) {
             require(
-                IERC165Upgradeable(_hyperlink).supportsInterface(type(IERC721Upgradeable).interfaceId),
+                IERC165Upgradeable(link_).supportsInterface(type(IERC721Upgradeable).interfaceId),
                 "HyperlinkFactory: hyperlink does not support ERC721 interfaceID"
             );
         }
 
-        Hyperlink(payable(clone)).initialize( _tokenMetadata, _contractMetadata, _primaryRecipient, _quantityForSale, _salePrice, _platform, _platformFeeBasisPoints, _hyperlink);
-        emit HyperlinkCreated(_primaryRecipient, _hyperlink, _platform, clone, _quantityForSale, _salePrice, _platformFeeBasisPoints);
+        Hyperlink(payable(clone)).initialize( tokenMetadata_, contractMetadata_, primaryRecipient_, quantityForSale_, salePrice_, platform_, platformFeeBasisPoints_, link_);
+        emit HyperlinkCreated(primaryRecipient_, link_, platform_, clone, quantityForSale_, salePrice_, platformFeeBasisPoints_);
         return clone;
     }
 

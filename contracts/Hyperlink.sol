@@ -21,73 +21,73 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
     // ============== VARIABLES ==============
 
     // METADATA
-    string internal tokenMetadata;
-    string internal contractMetadata;
+    string internal _tokenMetadata;
+    string internal _contractMetadata;
 
     // MONETARY
-    address payable internal primaryRecipient;
-    uint256 internal quantityForSale;
-    uint256 internal salePrice;
+    address payable internal _primaryRecipient;
+    uint256 internal _quantityForSale;
+    uint256 internal _salePrice;
 
-    address payable internal platform;
-    uint256 internal platformFeeBasisPoints; // IN ETH (not a percentage)
+    address payable internal _platform;
+    uint256 internal _platformFeeBasisPoints;
 
-    // HYPERLINK
-    address internal hyperlink;
+    // LINK
+    address internal _link;
 
     // SALES STATE
-    uint256 internal numberSold;
+    uint256 internal _numberSold;
 
 
 
     // ============= INITIALIZER =============
     function initialize(
-        string calldata _tokenMetadata,
-        string calldata _contractMetadata,
-        address payable _primaryRecipient,
-        uint256 _quantityForSale,
-        uint256 _salePrice,
-        address payable _platform,
-        uint256 _platformFeeBasisPoints,
-        address _hyperlink
+        string calldata tokenMetadata_,
+        string calldata contractMetadata_,
+        address payable primaryRecipient_,
+        uint256 quantityForSale_,
+        uint256 salePrice_,
+        address payable platform_,
+        uint256 platformFeeBasisPoints_,
+        address link_
     ) initializer external {
         __ERC721_init("Hyperlink", "HYPERLINK");
-        tokenMetadata = _tokenMetadata;
-        contractMetadata = _contractMetadata;
+        _tokenMetadata = tokenMetadata_;
+        _contractMetadata = contractMetadata_;
 
-        primaryRecipient = _primaryRecipient;
-        quantityForSale = _quantityForSale;
-        salePrice = _salePrice;
+        _primaryRecipient = primaryRecipient_;
+        _quantityForSale = quantityForSale_;
+        _salePrice = salePrice_;
 
-        platform = _platform;
-        platformFeeBasisPoints = _platformFeeBasisPoints;
+        _platform = platform_;
+        _platformFeeBasisPoints = platformFeeBasisPoints_;
 
-        hyperlink = _hyperlink;
+        _link = link_;
     }
 
     // ============ CORE FUNCTIONS ============
     function mint() public payable {
         // Check that there are still tokens available to purchase.
         require(
-            numberSold < quantityForSale,
+            _numberSold < _quantityForSale,
             "Hyperlink: all editions have already been sold"
         );
         // Check that the sender is paying the correct amount.
         require(
-            msg.value == salePrice,
+            msg.value == _salePrice,
             "Hyperlink: must send enough to purchase the edition"
         );
 
-        if (hyperlink != address(0)) {
+        if (_link != address(0)) {
             require(
-                IERC721Upgradeable(hyperlink).balanceOf(msg.sender) > 0,
+                IERC721Upgradeable(_link).balanceOf(msg.sender) > 0,
                 "Hyperlink: must own the linked edition to mint"
             );
         }
 
 
-        numberSold++; // first edition starts at index 1 (more humanly understood)
-        _mint(msg.sender, numberSold);
+        _numberSold++; // first edition starts at index 1 (more humanly understood)
+        _mint(msg.sender, _numberSold);
     }
 
     function withdraw() public nonReentrant {
@@ -98,10 +98,10 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
             "Hyperlink: contract balance must be greater than zero"
         );
 
-        uint256 platformFee = contractBalance.mul(platformFeeBasisPoints) / BASIS_POINTS;
-        primaryRecipient.sendValue(contractBalance.sub(platformFee)); // the rest goes to the fund recipient 
+        uint256 platformFee = contractBalance.mul(_platformFeeBasisPoints) / BASIS_POINTS;
+        _primaryRecipient.sendValue(contractBalance.sub(platformFee)); // the rest goes to the fund recipient 
         if (platformFee > 0) {
-            platform.sendValue(platformFee);
+            _platform.sendValue(platformFee);
         }
     }
 
@@ -111,19 +111,33 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
 
     function tokenURI(uint256 _tokenId) public view override returns (string memory) {
         require(ownerOf(_tokenId) != address(0), "Hyperlink: token has not been sold or does not exist");
-        return tokenMetadata;
+        return _tokenMetadata;
     }
 
     function contractURI() public view returns (string memory) {
-        return contractMetadata;
+        return _contractMetadata;
     }
 
-    function editionURI() public view returns (string memory) {
-        return tokenMetadata;
+
+
+    function tokenMetadata() public view returns (string memory) {
+        return _tokenMetadata;
     }
 
-    function getHyperlink() public view returns (address) {
-        return hyperlink;
+    function numberSold() public view returns (uint256) {
+        return _numberSold;
+    }
+
+    function salePrice() public view returns (uint256) {
+        return _salePrice;
+    }
+
+    function quantityForSale() public view returns (uint256) {
+        return _quantityForSale;
+    }
+
+    function link() public view returns (address) {
+        return _link;
     }
 
     // receive any royalties 
