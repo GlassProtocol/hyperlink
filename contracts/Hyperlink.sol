@@ -131,4 +131,10 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
         return hyperlink;
     }
 
+    // receive any royalties 
+
+    receive() external payable {}
+
+    fallback() external payable {}
+
 }
