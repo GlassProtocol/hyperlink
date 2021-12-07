@@ -78,11 +78,6 @@ contract Hyperlink is Initializable, ReentrancyGuardUpgradeable, ERC721Upgradeab
             "Hyperlink: must send enough to purchase the edition"
         );
 
-        require(
-            IERC721Upgradeable(address(this)).balanceOf(msg.sender) < 1,
-            "Hyperlink: there is a balance limit of one edition per address"
-        );
-
         if (hyperlink != address(0)) {
             require(
                 IERC721Upgradeable(hyperlink).balanceOf(msg.sender) > 0,
