@@ -41,6 +41,29 @@ A majority of a fans do not have large sums of crypto to spend on 1/1 NFT auctio
 
 ---
 
+# Contracts
+Factory Mainnet: `0xe844D8286b3a0be21569d6bb736515Ec13548f05`
+
+
+Factory Rinkeby: `0xBeFb00D12389c1A57c059B015fB6aBD987C14124`
+
+
+
+```typescript
+// creating a hyperlinked edition pack
+await hyperlinkFactory.create(
+    TOKEN_METADATA,
+    CONTRACT_METADATA,
+    PRIMARY_RECIPIENT,
+    QUANTITY_FOR_SALE,
+    SALE_PRICE,
+    PLATFORM,
+    PLATFORM_FEE_BASIS_POINTS,
+    HYPERLINK
+)
+```
+
+---
 # Usage 
 
 compiling contracts: `$ yarn compile`  
