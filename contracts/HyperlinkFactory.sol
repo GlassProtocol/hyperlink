@@ -25,10 +25,10 @@ contract HyperlinkFactory {
 
 
     event HyperlinkCreated(
+        address indexed contractAddress,
+        address indexed link,
         address indexed primaryRecipient,
-        address indexed hyperlink,
-        address indexed platform,
-        address contractAddress,
+        address platform,
         uint256 quantityForSale,
         uint256 salePrice,
         uint256 platformFeeBasisPoints
@@ -68,7 +68,7 @@ contract HyperlinkFactory {
         }
 
         Hyperlink(payable(clone)).initialize( tokenMetadata_, contractMetadata_, primaryRecipient_, quantityForSale_, salePrice_, platform_, platformFeeBasisPoints_, link_);
-        emit HyperlinkCreated(primaryRecipient_, link_, platform_, clone, quantityForSale_, salePrice_, platformFeeBasisPoints_);
+        emit HyperlinkCreated(clone, link_, primaryRecipient_, platform_, quantityForSale_, salePrice_, platformFeeBasisPoints_);
         return clone;
     }
 
