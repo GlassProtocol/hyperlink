@@ -71,10 +71,3 @@ compiling contracts: `$ yarn compile`
 testing contracts: `$ yarn test`  
 
 deploying factory: `$ yarn script scripts/deployFactory.ts --network <YOUR_NETWORK>`  
-
----
-
-# Todo:
-
-1. refine the contract events
-2. peer-reviews (please add a <FIRST_NAME>.md to the peer-review folder)
